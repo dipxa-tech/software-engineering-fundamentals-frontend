@@ -73,7 +73,7 @@ const App = () => {
       clearInterval(intervalRef.current); // Clear interval on unmount
       ctx.revert();
     };
-  }, [welcomeText]); // Run once on component mount
+  }, []); // Run once on component mount
 
   return (
     <div className="relative" ref={comp}>
