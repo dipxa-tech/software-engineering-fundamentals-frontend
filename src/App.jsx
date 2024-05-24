@@ -1,5 +1,9 @@
+import Home from "./pages/Home/Home";
+import MainLayout from "./layout/MainLayout";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import "./index.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const App = () => {
   const comp = useRef(null);
@@ -27,14 +31,14 @@ const App = () => {
             .join("");
         });
 
-        if (iteration >= welcomeText.length) {
-          clearInterval(intervalRef.current);
-          // Reset to "Welcome" after animation
-          setTimeout(() => {
-            setWelcomeText("Welcome.");
-            startAnimation(); // Start animation again
-          }, 3000); // Change 3000 to desired duration before resetting
-        }
+        // if (iteration >= welcomeText.length) {
+        //   clearInterval(intervalRef.current);
+        //   // Reset to "Welcome" after animation
+        //   setTimeout(() => {
+        //     setWelcomeText("Welcome.");
+        //     startAnimation(); // Start animation again
+        //   }, 3000); // Change 3000 to desired duration before resetting
+        // }
 
         iteration += 1 / 3;
       }, 30);
@@ -42,30 +46,21 @@ const App = () => {
 
     const ctx = gsap.context(() => {
       const t1 = gsap.timeline();
-      t1.from("#intro-slider", {
-        yPercent: "100",
-        duration: 1.3,
-        delay: 0.3,
-      })
-        .from(["#title-1", "#title-2", "#title-3"], {
+        t1.from("#welcome", {
           opacity: 0,
-          y: "+=30",
-          stagger: 0.5,
+          duration: 1,
+          onComplete: () => {
+            startAnimation();
+          },
         })
-        .to(["#title-1", "#title-2", "#title-3"], {
+        .to("#welcome", {
           opacity: 0,
-          y: "-=30",
-          delay: 0.3,
-          stagger: 0.5,
+          duration: 1,
+          delay: 2,
         })
-        .to("#intro-slider", {
-          xPercent: "-100",
-          duration: 1.3,
-        })
-        .from("#welcome", {
+        .from("#homePageRouting", {
           opacity: 0,
           duration: 0.5,
-          onComplete: startAnimation, // Start the animation when welcome text is fully visible
         });
     }, comp);
 
@@ -75,31 +70,35 @@ const App = () => {
     };
   }, []); // Run once on component mount
 
+  // useEffect(() => {
+  //   console.log(animationComplete);
+  // }, [animationComplete]);
+
   return (
-    <div className="relative" ref={comp}>
-      <div
-        id="intro-slider"
-        className="h-screen p-10 bg-gray-50 absolute top-0 left-0 font-shareMono z-10 w-full flex flex-col gap-10 tracking-tight"
-      >
-        <h1 className="text-9xl" id="title-1">
-          Software 
-        </h1>
-        <h1 className="text-9xl" id="title-2">
-        Engineering
-        </h1>
-        <h1 className="text-9xl" id="title-3">
-          Fundementals
-        </h1>
+    <>
+      {/* <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Helmet> */}
+      <div className="relative" ref={comp}>
+        <div className="h-screen w-screen flex bg-gray-950 justify-center place-items-center">
+          <h1
+            id="welcome"
+            className="text-9xl font-bold absolute text-gray-100 font-shareTechMono"
+          >
+            {welcomeText}
+          </h1>
+        </div>
+        <div id="homePageRouting" className="absolute top-0 left-0 bg-gray-950 h-screen w-screen">
+          <Router>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<Home />} />
+              </Route>
+            </Routes>
+          </Router>
+        </div>
       </div>
-      <div className="h-screen flex bg-gray-950 justify-center place-items-center">
-        <h1
-          id="welcome"
-          className="text-9xl font-bold text-gray-100 font-shareMono"
-        >
-          {welcomeText}
-        </h1>
-      </div>
-    </div>
+    </>
   );
 };
 

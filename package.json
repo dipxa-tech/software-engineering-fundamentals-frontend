@@ -10,10 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource/m-plus-1p": "^5.0.19",
+    "@fontsource/moul": "^5.0.20",
+    "@fontsource/rubik-mono-one": "^5.0.20",
+    "@fontsource/share-tech-mono": "^5.0.12",
+    "@gsap/react": "^2.1.0",
+    "animejs": "^3.2.2",
     "autoprefixer": "^10.4.19",
+    "framer-motion": "^11.0.25",
     "gsap": "^3.12.5",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.5",
+    "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
