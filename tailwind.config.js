@@ -13,7 +13,8 @@ export default {
         darkBg : "#001233",
         redWord :"#FF595A",
         beigeWord :"#CAC0B3",
-        whiteColour: "#FFFFFF"
+        whiteColour: "#FFFFFF",
+        blackBg: "#080808"
       }
     },
   },

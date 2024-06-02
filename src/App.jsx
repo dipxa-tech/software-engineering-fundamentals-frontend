@@ -4,12 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import "./index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ContactUs from "./pages/ContactUs/ContactUs";
+import Login from "./pages/Login/Login";
+import SignUp from "./pages/SignUp/SignUp";
+import { Box, Flex } from "@chakra-ui/react";
+import About from "./pages/About/About";
 
 const App = () => {
   const comp = useRef(null);
   const [welcomeText, setWelcomeText] = useState("Welcome.");
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const intervalRef = useRef(null); // Ref for the interval
+  const [showWelcome, setShowWelcome] = useState(true); // State to control visibility of welcome
 
   useEffect(() => {
     const startAnimation = () => {
@@ -31,16 +37,16 @@ const App = () => {
             .join("");
         });
 
-        // if (iteration >= welcomeText.length) {
-        //   clearInterval(intervalRef.current);
-        //   // Reset to "Welcome" after animation
-        //   setTimeout(() => {
-        //     setWelcomeText("Welcome.");
-        //     startAnimation(); // Start animation again
-        //   }, 3000); // Change 3000 to desired duration before resetting
-        // }
-
         iteration += 1 / 3;
+
+        // If animation is complete, stop interval and fade out welcome
+        if (iteration >= welcomeText.length) {
+          clearInterval(intervalRef.current);
+          gsap.to("#welcome", { opacity: 0, duration: 1, onComplete: () => {
+            // After fade out, set showWelcome to false to hide the Flex container
+            setShowWelcome(false);
+          }});
+        }
       }, 30);
     };
 
@@ -70,34 +76,44 @@ const App = () => {
     };
   }, []); // Run once on component mount
 
-  // useEffect(() => {
-  //   console.log(animationComplete);
-  // }, [animationComplete]);
-
   return (
     <>
-      {/* <Helmet>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Helmet> */}
-      <div className="relative" ref={comp}>
-        <div className="h-screen w-screen flex bg-gray-950 justify-center place-items-center">
+     <div className="relative" ref={comp}>
+      {showWelcome && (
+        <Flex
+          h="100vh"
+          w="100vw"
+          bg="darkBg"
+          justifyContent="center"
+          alignItems="center"
+        >
           <h1
             id="welcome"
             className="text-9xl font-bold absolute text-gray-100 font-shareTechMono"
           >
             {welcomeText}
           </h1>
-        </div>
-        <div id="homePageRouting" className="absolute top-0 left-0 bg-gray-950 h-screen w-screen">
-          <Router>
-            <Routes>
-              <Route path="/" element={<MainLayout />}>
-                <Route index element={<Home />} />
-              </Route>
-            </Routes>
-          </Router>
-        </div>
-      </div>
+        </Flex>
+      )}
+      <Box
+        id="homePageRouting"
+        className="absolute bg-blackBg top-0 left-0"
+        minW="100%"
+        minH="100vh"
+      >
+        <Router>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="/contactus" element={<ContactUs />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/about" element={<About />} />
+            </Route>
+          </Routes>
+        </Router>
+      </Box>
+    </div>
     </>
   );
 };

@@ -18,6 +18,7 @@ const theme = extendTheme({
     redWord: "#FF595A",
     beigeWord: "#CAC0B3",
     whiteColour: "#FFFFFF",
+    blackBg: "#080808"
   },
 });
 
