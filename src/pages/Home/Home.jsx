@@ -1,8 +1,10 @@
 import { Box, Button, Container, Heading, Stack, Text } from "@chakra-ui/react";
 import { useTheme } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Container maxW="70%" h="100%" pt="6%" display="flex" alignItems="center">
@@ -40,6 +42,11 @@ const Home = () => {
           bg={theme.colors.redWord}
           color="black"
           fontFamily={theme.fonts.moul}
+          onClick={() => {
+            if (location.pathname !== "/about") {
+              navigate("/about");
+            }
+          }}
         >
           Get Started
         </Button>

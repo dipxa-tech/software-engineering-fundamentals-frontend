@@ -66,7 +66,7 @@ const App = () => {
         })
         .from("#homePageRouting", {
           opacity: 0,
-          duration: 0.5,
+          duration: 1,
         });
     }, comp);
 
@@ -83,7 +83,7 @@ const App = () => {
         <Flex
           h="100vh"
           w="100vw"
-          bg="darkBg"
+          bg="blackBg"
           justifyContent="center"
           alignItems="center"
         >

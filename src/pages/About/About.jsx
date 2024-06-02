@@ -12,7 +12,7 @@ import {
         direction="column"
         align="center"
         justify="center"
-        bg="BlackBg"
+        bg="blackBg"
         p="1%"
       >
         <Box maxWidth="60%" textAlign="center" mb="2%">
@@ -24,7 +24,7 @@ import {
           </Text>
         </Box>
         <Box
-          bg="BlackBg"
+          bg="blackBg"
           p="2%"
           width="100%"
           maxWidth="60%"
