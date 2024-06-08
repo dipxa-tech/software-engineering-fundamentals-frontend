@@ -37,16 +37,16 @@ const App = () => {
             .join("");
         });
 
-        iteration += 1 / 3;
+        // if (iteration >= welcomeText.length) {
+        //   clearInterval(intervalRef.current);
+        //   // Reset to "Welcome" after animation
+        //   setTimeout(() => {
+        //     setWelcomeText("Welcome.");
+        //     startAnimation(); // Start animation again
+        //   }, 3000); // Change 3000 to desired duration before resetting
+        // }
 
-        // If animation is complete, stop interval and fade out welcome
-        if (iteration >= welcomeText.length) {
-          clearInterval(intervalRef.current);
-          gsap.to("#welcome", { opacity: 0, duration: 1, onComplete: () => {
-            // After fade out, set showWelcome to false to hide the Flex container
-            setShowWelcome(false);
-          }});
-        }
+        iteration += 1 / 3;
       }, 30);
     };
 
@@ -66,7 +66,10 @@ const App = () => {
         })
         .from("#homePageRouting", {
           opacity: 0,
-          duration: 1,
+          duration: 0.5,
+          onComplete: () => {
+            setShowWelcome(false)
+          }
         });
     }, comp);
 
@@ -76,6 +79,9 @@ const App = () => {
     };
   }, []); // Run once on component mount
 
+  // useEffect(() => {
+  //   console.log(animationComplete);
+  // }, [animationComplete]);
   return (
     <>
      <div className="relative" ref={comp}>
