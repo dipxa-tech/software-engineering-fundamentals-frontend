@@ -7,15 +7,30 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
+import Profile from "./pages/Profile/Profile";
 import { Box, Flex } from "@chakra-ui/react";
 import About from "./pages/About/About";
+import Cookies from "js-cookie";
 
 const App = () => {
+  const [profile, setProfile] = useState("");
+
+  //animation states
   const comp = useRef(null);
   const [welcomeText, setWelcomeText] = useState("Welcome.");
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const intervalRef = useRef(null); // Ref for the interval
   const [showWelcome, setShowWelcome] = useState(true); // State to control visibility of welcome
+
+  //login states
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  //handles and check if user accidentally refreshes the page to maintain the logged in status
+  useEffect(() => {
+    // Check if user is logged in on component mount
+    const loggedInStatus = Cookies.get("accessToken");
+    setLoggedIn(loggedInStatus);
+  }, []);
 
   useEffect(() => {
     const startAnimation = () => {
@@ -52,13 +67,13 @@ const App = () => {
 
     const ctx = gsap.context(() => {
       const t1 = gsap.timeline();
-        t1.from("#welcome", {
-          opacity: 0,
-          duration: 1,
-          onComplete: () => {
-            startAnimation();
-          },
-        })
+      t1.from("#welcome", {
+        opacity: 0,
+        duration: 1,
+        onComplete: () => {
+          startAnimation();
+        },
+      })
         .to("#welcome", {
           opacity: 0,
           duration: 1,
@@ -68,8 +83,8 @@ const App = () => {
           opacity: 0,
           duration: 0.5,
           onComplete: () => {
-            setShowWelcome(false)
-          }
+            setShowWelcome(false);
+          },
         });
     }, comp);
 
@@ -84,42 +99,63 @@ const App = () => {
   // }, [animationComplete]);
   return (
     <>
-     <div className="relative" ref={comp}>
-      {showWelcome && (
-        <Flex
-          h="100vh"
-          w="100vw"
-          bg="blackBg"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <h1
-            id="welcome"
-            className="text-9xl font-bold absolute text-gray-100 font-shareTechMono"
+      <div className="relative" ref={comp}>
+        {showWelcome && (
+          <Flex
+            h="100vh"
+            w="100vw"
+            bg="blackBg"
+            justifyContent="center"
+            alignItems="center"
           >
-            {welcomeText}
-          </h1>
-        </Flex>
-      )}
-      <Box
-        id="homePageRouting"
-        className="absolute bg-blackBg top-0 left-0"
-        minW="100%"
-        minH="100vh"
-      >
-        <Router>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Home />} />
-              <Route path="/contactus" element={<ContactUs />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/about" element={<About />} />
-            </Route>
-          </Routes>
-        </Router>
-      </Box>
-    </div>
+            <h1
+              id="welcome"
+              className="text-9xl font-bold absolute text-gray-100 font-shareTechMono"
+            >
+              {welcomeText}
+            </h1>
+          </Flex>
+        )}
+        <Box
+          id="homePageRouting"
+          className="absolute bg-blackBg top-0 left-0"
+          minW="100%"
+          minH="100vh"
+        >
+          <Router>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <MainLayout
+                    setLoggedIn={setLoggedIn}
+                    loggedIn={loggedIn}
+                    profile={profile}
+                  />
+                }
+              >
+                <Route index element={<Home />} />
+                <Route path="/contactus" element={<ContactUs />} />
+                <Route
+                  path="/login"
+                  element={<Login setLoggedIn={setLoggedIn} />}
+                />
+                <Route
+                  path="/signup"
+                  element={<SignUp setLoggedIn={setLoggedIn} />}
+                />
+                <Route path="/about" element={<About />} />
+                <Route
+                  path="/profile"
+                  element={
+                    <Profile profile={profile} setProfile={setProfile} />
+                  }
+                />
+              </Route>
+            </Routes>
+          </Router>
+        </Box>
+      </div>
     </>
   );
 };

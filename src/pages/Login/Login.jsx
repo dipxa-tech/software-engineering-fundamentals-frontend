@@ -13,8 +13,9 @@ import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
+import Cookies from "js-cookie";
 
-const Login = () => {
+const Login = ({ setLoggedIn }) => {
   const toast = useToast();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -33,21 +34,10 @@ const Login = () => {
       const response = await api.post("/auth", loginData);
 
       // Extract the token and user data from the response
-      // const { accessToken, userData, refreshToken } = response.data;
-      // document.cookie = `jwt=${refreshToken}; HttpOnly=false; Secure=false; SameSite=None; expires=${new Date(
-      //   Date.now() + 7 * 24 * 60 * 60 * 1000
-      // ).toUTCString()}`;
+      const { accessToken } = response.data;
 
       // Store the token and user data in a secure manner (e.g., in cookies or local storage)
-      // Cookies.set("accessToken", accessToken, { expires: 1 });
-      // localStorage.setItem("userData", JSON.stringify(userData));
-
-      // if (rememberMe) {
-      //   Cookies.set("jwt", refreshToken, { expires: 7 });
-      // }
-
-      // Set the setLoggedIn to true
-      // setLoggedIn(true);
+      Cookies.set("accessToken", accessToken);
 
       if (response) {
         toast({
@@ -58,10 +48,11 @@ const Login = () => {
           isClosable: true,
           position: "bottom-right",
         });
+        setLoggedIn(true);
         navigate("/");
       } else {
         toast({
-          title: "Error.",
+          title: "Error Mismatched account.",
           description: "An Error Occured.",
           status: "error",
           duration: 3000,
