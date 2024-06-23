@@ -14,8 +14,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
-const Login = ({ setLoggedIn }) => {
+const Login = ({ setLoggedIn, setProfile }) => {
   const toast = useToast();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -39,7 +40,19 @@ const Login = ({ setLoggedIn }) => {
       // Store the token and user data in a secure manner (e.g., in cookies or local storage)
       Cookies.set("accessToken", accessToken);
 
+
       if (response) {
+        const fetchUserProfile = async () => {
+          const storedUserData = Cookies.get('accessToken');
+          if (storedUserData) {
+            const decodedToken = jwtDecode(storedUserData);
+            const userId = decodedToken.UserInfo._id;
+            const response = await api.get(`/users/${userId}`);
+            setProfile(response.data.profile)
+          }
+        };
+    
+        fetchUserProfile();
         toast({
           title: "Logged In.",
           description: "Welcome back.",

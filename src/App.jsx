@@ -11,9 +11,24 @@ import Profile from "./pages/Profile/Profile";
 import { Box, Flex } from "@chakra-ui/react";
 import About from "./pages/About/About";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import api from "../src/api/api";
+
 
 const App = () => {
-  const [profile, setProfile] = useState("");
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const storedUserData = Cookies.get('accessToken');
+      if (storedUserData) {
+        const decodedToken = jwtDecode(storedUserData);
+        const userId = decodedToken.UserInfo._id;
+        const response = await api.get(`/users/${userId}`);
+        setProfile(response.data.profile)
+      }
+    };
+
+    fetchUserProfile();
+  }, [])
 
   //animation states
   const comp = useRef(null);
@@ -21,9 +36,12 @@ const App = () => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const intervalRef = useRef(null); // Ref for the interval
   const [showWelcome, setShowWelcome] = useState(true); // State to control visibility of welcome
-
+  
   //login states
   const [loggedIn, setLoggedIn] = useState(false);
+
+  //profile states
+  const [profile, setProfile] = useState("");
 
   //handles and check if user accidentally refreshes the page to maintain the logged in status
   useEffect(() => {
@@ -138,7 +156,7 @@ const App = () => {
                 <Route path="/contactus" element={<ContactUs />} />
                 <Route
                   path="/login"
-                  element={<Login setLoggedIn={setLoggedIn} />}
+                  element={<Login setLoggedIn={setLoggedIn}  setProfile={setProfile}/>}
                 />
                 <Route
                   path="/signup"
