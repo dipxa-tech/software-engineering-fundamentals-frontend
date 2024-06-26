@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 
-const SignUp = ({ setLoggedIn }) => {
+const SignUp = () => {
   const toast = useToast();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const SignUp = ({ setLoggedIn }) => {
 
   return (
     <Flex justifyContent="center" alignItems="center" direction="column">
-      <Heading pb="2%" textColor={theme.colors.beigeWord}>
+      <Heading pb="2%" textColor={theme.colors.beigeWord} fontFamily="mono">
         Sign Up
       </Heading>
       <Box

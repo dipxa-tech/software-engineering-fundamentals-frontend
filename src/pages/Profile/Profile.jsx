@@ -34,7 +34,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-export default function Settings({ profile, setProfile }) {
+export default function Profile({ profile, setProfile }) {
   const navigate = useNavigate();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,7 +43,6 @@ export default function Settings({ profile, setProfile }) {
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
-  // const [profile, setProfile] = useState("");
   const [tempProfile, setTempProfile] = useState("");
 
   const [fullname, setFullName] = useState("");

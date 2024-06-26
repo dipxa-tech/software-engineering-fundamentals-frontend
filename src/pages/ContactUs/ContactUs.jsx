@@ -7,7 +7,6 @@ import {
   Textarea,
   VStack,
   useToast,
-  Flex,
   Heading,
 } from "@chakra-ui/react";
 import { useTheme } from "@emotion/react";
@@ -30,13 +29,14 @@ const ContactUs = () => {
 
   return (
     <>
-      <Flex
-        justifyContent="center"
-        alignItems="center"
-        direction="column"
-        width="100%"
-        height="100%"
-      >
+      <Box
+      w="100vw"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      mt="5%"
+    >
         <Heading
           justifyContent="center"
           alignContent="center"
@@ -75,7 +75,7 @@ const ContactUs = () => {
             </VStack>
           </form>
         </Box>
-      </Flex>
+      </Box>
     </>
   );
 };

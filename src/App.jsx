@@ -13,6 +13,8 @@ import About from "./pages/About/About";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import api from "../src/api/api";
+import Request from "./pages/Request/Request";
+import Management from "./pages/Management/Management";
 
 
 const App = () => {
@@ -163,6 +165,8 @@ const App = () => {
                   element={<SignUp setLoggedIn={setLoggedIn} />}
                 />
                 <Route path="/about" element={<About />} />
+                <Route path="/request" element={<Request />} />
+                <Route path="/management" element={<Management />} />
                 <Route
                   path="/profile"
                   element={

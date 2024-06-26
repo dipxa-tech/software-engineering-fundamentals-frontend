@@ -7,7 +7,14 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxW="70%" h="100%" pt="6%" display="flex" alignItems="center">
+    <Container
+      maxW="70%"
+      h="100%"
+      pt="6%"
+      display="flex"
+      alignContent="center"
+      justifyContent="center"
+    >
       <Stack direction="column" alignItems="start">
         <Heading
           lineHeight={1.1}

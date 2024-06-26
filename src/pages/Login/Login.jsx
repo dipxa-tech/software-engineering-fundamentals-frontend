@@ -99,6 +99,7 @@ const Login = ({ setLoggedIn, setProfile }) => {
         alignContent="center"
         pb="2%"
         textColor={theme.colors.beigeWord}
+        fontFamily="mono"
       >
         Login
       </Heading>
