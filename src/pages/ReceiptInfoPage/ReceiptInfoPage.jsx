@@ -102,7 +102,7 @@ import {
             {currentReceipts.map((receipt) => (
               <Tr key={receipt._id}>
                 <Td>{receipt.receiptId}</Td>
-                <Td>{receipt.userId.username}</Td>
+                <Td>{receipt.userId?.username}</Td>
                 <Td>{receipt.assetType.join(", ")}</Td>
                 <Td>{new Date(receipt.date).toLocaleDateString()}</Td>
                 <Td>{receipt.quantity}</Td>
