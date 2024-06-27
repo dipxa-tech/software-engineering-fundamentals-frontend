@@ -117,7 +117,7 @@ const Management = ({ userID }) => {
               _selected={{ bg: "redWord", color: "blackBg" }}
               fontWeight="600"
             >
-              Receipts
+              Reciepts
             </Tab>
           </TabList>
           <Button
@@ -159,11 +159,7 @@ const Management = ({ userID }) => {
           </TabPanel>
           <TabPanel>
             <Box p={4}>
-              <ReceiptsInfoPage
-                navigate={navigate}
-                userID={userID}
-                userRoles={userRoles}
-              />
+              <ReceiptsInfoPage navigate={navigate} userID={userID} userRoles={userRoles}/>
             </Box>
           </TabPanel>
         </TabPanels>
@@ -171,7 +167,38 @@ const Management = ({ userID }) => {
     </Box>
   );
 
-  return userRoles.includes("Admin") ? renderAdminView() : null;
+  // Regular user view
+  const renderUserView = () => (
+    <Box w="100vw" p={4}>
+      <Tabs index={tabIndex} onChange={handleTabsChange} variant="unstyled">
+        <TabList>
+          <Tab
+            width="10vw"  
+            borderRadius="xl"
+            bg="transparent"
+            color="beigeWord"
+            border="1px"
+            borderColor="beigeWord"
+            _hover={{ bg: "redWord", color: "blackBg" }}
+            _selected={{ bg: "redWord", color: "blackBg" }}
+            fontWeight="600"
+          >
+            Reciepts
+          </Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <Box p={4}>
+              <ReceiptsInfoPage navigate={navigate} userID={userID} userRoles={userRoles}/>
+            </Box>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Box>
+  );
+
+  return userRoles.includes("Admin") ? renderAdminView() : renderUserView();
 };
 
 export default Management;
