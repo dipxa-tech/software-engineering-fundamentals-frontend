@@ -15,35 +15,39 @@ import { jwtDecode } from "jwt-decode";
 import api from "../src/api/api";
 import Request from "./pages/Request/Request";
 import Management from "./pages/Management/Management";
-
+import UserEdit from "./pages/UserEdit/UserEdit";
+import EditLifeCycle from "./pages/EditLifeCycle/EditLifeCycle";
+import EditAsset from "./pages/EditAssets/EditAssets";
+import EditFeedback from "./pages/EditFeedBacks/EditFeedBacks";
 
 const App = () => {
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const storedUserData = Cookies.get('accessToken');
-      if (storedUserData) {
-        const decodedToken = jwtDecode(storedUserData);
-        const userId = decodedToken.UserInfo._id;
-        const response = await api.get(`/users/${userId}`);
-        setProfile(response.data.profile)
-      }
-    };
-
-    fetchUserProfile();
-  }, [])
-
   //animation states
   const comp = useRef(null);
   const [welcomeText, setWelcomeText] = useState("Welcome.");
+  const [userID, setUserID] = useState("");
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const intervalRef = useRef(null); // Ref for the interval
   const [showWelcome, setShowWelcome] = useState(true); // State to control visibility of welcome
-  
+
   //login states
   const [loggedIn, setLoggedIn] = useState(false);
 
   //profile states
   const [profile, setProfile] = useState("");
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const storedUserData = Cookies.get("accessToken");
+      if (storedUserData) {
+        const decodedToken = jwtDecode(storedUserData);
+        const userId = decodedToken.UserInfo._id;
+        setUserID(userId);
+        const response = await api.get(`/users/${userId}`);
+        setProfile(response.data.profile);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   //handles and check if user accidentally refreshes the page to maintain the logged in status
   useEffect(() => {
@@ -151,6 +155,7 @@ const App = () => {
                     setLoggedIn={setLoggedIn}
                     loggedIn={loggedIn}
                     profile={profile}
+                    userID={userID}
                   />
                 }
               >
@@ -158,7 +163,9 @@ const App = () => {
                 <Route path="/contactus" element={<ContactUs />} />
                 <Route
                   path="/login"
-                  element={<Login setLoggedIn={setLoggedIn}  setProfile={setProfile}/>}
+                  element={
+                    <Login setLoggedIn={setLoggedIn} setProfile={setProfile} />
+                  }
                 />
                 <Route
                   path="/signup"
@@ -168,11 +175,16 @@ const App = () => {
                 <Route path="/request" element={<Request />} />
                 <Route path="/management" element={<Management />} />
                 <Route
-                  path="/profile"
+                  path={`/profile/${userID}`}
                   element={
                     <Profile profile={profile} setProfile={setProfile} />
                   }
                 />
+                  <Route path="/users/:id" element={<UserEdit />} />
+                  <Route path="/lifecycles/:id" element={<EditLifeCycle />} />
+                  <Route path="/feedbacks/:id" element={<EditFeedback />} />
+                  <Route path="/assets/:id" element={<EditAsset />} />
+                  <Route path="/receipt/:id" element={<Management />} />
               </Route>
             </Routes>
           </Router>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -12,41 +12,99 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/api"; // Adjust the import path as needed
+import {jwtDecode} from "jwt-decode";
+import Cookies from "js-cookie";
 
 const Request = () => {
   const [username, setUsername] = useState("");
-  const [amount, setAmount] = useState("");
-  const [assetType, setAssetType] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [assetId, setAssetId] = useState(""); // Store asset ID
   const [others, setOthers] = useState("");
+  const [assetTypes, setAssetTypes] = useState([]); // Store asset types
   const toast = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    // Fetch asset types from the backend
+    const fetchAssetTypes = async () => {
+      try {
+        const response = await api.get("/assets");
+        const filteredAssets = response.data.filter(
+          (asset) => asset.status === "Available"
+        );
+        setAssetTypes(filteredAssets);
+      } catch (error) {
+        toast({
+          title: "An error occurred.",
+          description: "Unable to fetch asset types.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    };
+    fetchAssetTypes();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    // You can send the form data to your backend API
 
-    toast({
-      title: "Loan request submitted.",
-      description: "We've received your loan request.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
+    try {
+      const storedUserData = Cookies.get("accessToken");
+      if (storedUserData) {
+        const decodedToken = jwtDecode(storedUserData);
+        const userId = decodedToken.UserInfo._id;
 
-    // Clear the form
-    setUsername("");
+        // Construct the request data
+        const receiptData = {
+          userId: userId,
+          assetId: assetId,
+          date: new Date().toISOString(),
+          quantity: amount,
+          status: "Pending",
+          others,
+        };
 
-    setAmount("");
-    setAssetType("");
+        // Send the form data to your backend API
+        await api.post("/lifecycles", receiptData);
+
+        // Display success toast
+        toast({
+          title: "Loan request submitted.",
+          description: "We've received your loan request.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        // Clear the form
+        setUsername("");
+        setAmount(0);
+        setAssetId(""); // Clear asset ID
+        setOthers("");
+
+        // Navigate to home or another page if needed
+        navigate("/");
+      }
+    } catch (error) {
+      // Handle error
+      toast({
+        title: "An error occurred.",
+        description: "Unable to submit loan request.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleCancel = () => {
     // Clear the form
     setUsername("");
-
-    setAmount("");
-    setAssetType("");
+    setAmount(0);
+    setAssetId(""); // Clear asset ID
+    setOthers("");
     navigate("/");
   };
 
@@ -74,6 +132,7 @@ const Request = () => {
             <FormControl id="username" isRequired>
               <FormLabel color="beigeWord">Username</FormLabel>
               <Input
+                color="beigeWord"
                 bg="#222222"
                 border="none"
                 type="text"
@@ -84,11 +143,14 @@ const Request = () => {
             <FormControl id="amount" isRequired>
               <FormLabel color="beigeWord">Amount to Loan</FormLabel>
               <Input
+                color="beigeWord"
                 bg="#222222"
                 type="number"
                 border="none"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  setAmount(Number(e.target.value));
+                }}
               />
             </FormControl>
             <FormControl id="assetType" isRequired>
@@ -98,13 +160,23 @@ const Request = () => {
                 colorScheme="gray"
                 bg="#222222"
                 border="none"
-                value={assetType}
-                onChange={(e) => setAssetType(e.target.value)}
+                value={assetId} // Use asset ID
+                onChange={(e) => {
+                  setAssetId(e.target.value); // Set asset ID
+                }}
               >
-                <option style={{ backgroundColor: "#333333" }} value="Chairs">Chairs</option>
-                <option style={{ backgroundColor: "#333333" }} value="Tables">Tables</option>
-                <option style={{ backgroundColor: "#333333" }} value="Classrooms">Classrooms</option>
-                <option style={{ backgroundColor: "#333333" }} value="others">Others</option>
+                <option style={{ backgroundColor: "#333333" }} value="">
+                  Select asset type
+                </option>
+                {assetTypes.map((asset) => (
+                  <option
+                    key={asset._id}
+                    style={{ backgroundColor: "#333333" }}
+                    value={asset._id} // Use asset ID as value
+                  >
+                    {asset.genre}
+                  </option>
+                ))}
               </Select>
             </FormControl>
             <FormControl id="others">
@@ -112,6 +184,7 @@ const Request = () => {
                 Others information (if needed)
               </FormLabel>
               <Textarea
+                color="beigeWord"
                 background="#222222"
                 size="lg"
                 border="none"

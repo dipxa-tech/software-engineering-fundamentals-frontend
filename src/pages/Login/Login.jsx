@@ -30,6 +30,7 @@ const Login = ({ setLoggedIn, setProfile }) => {
         username,
         password,
       };
+      console.log(loginData)
 
       // Make an API request to authenticate the user and obtain a token
       const response = await api.post("/auth", loginData);

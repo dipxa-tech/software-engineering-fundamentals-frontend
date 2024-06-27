@@ -29,7 +29,6 @@ import {
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import api from "../../api/api";
-
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -83,6 +82,7 @@ export default function Profile({ profile, setProfile }) {
 
     fetchUserData();
   }, []);
+
   const handleClick = (passType) => {
     if (passType === "old") {
       setShowOldPass(!showOldPass);
@@ -138,12 +138,9 @@ export default function Profile({ profile, setProfile }) {
       }
 
       // Update user data in the database
-      await api.patch(`/users`, updateData);
+      await api.patch(`/users/${id}`, updateData);
 
-      // // Make a new API request to get updated user data after patching
-      // const response = await api.get(`/users/${id}`);
-      // setUserData(response.data);
-
+      // Make a new API request to get updated user data after patching
       const signUpResponse = await api.post("/auth", {
         username: updateData.username,
         password: password,

@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 
-const Header = ({ loggedIn, setLoggedIn, profile }) => {
+const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const toast = useToast();
@@ -145,7 +145,7 @@ const Header = ({ loggedIn, setLoggedIn, profile }) => {
                 justifyContent="center"
                 onClick={() => {
                   // Handle profile navigation
-                  navigate("/profile");
+                  navigate(`/profile/${userID}`);
                 }}
               >
                 Profile
