@@ -64,8 +64,15 @@ const AssetsInfoPage = ({ navigate }) => {
     }
   };
 
+  const handleRefresh = () => {
+    fetchAssets();
+  };
+
   return (
     <>
+    <Button onClick={handleRefresh} mb={4}>
+          Refresh Assets
+        </Button>
       <Table variant="unstyled">
         <Thead>
           <Tr color="white" fontWeight="600" fontSize="sm">
