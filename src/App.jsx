@@ -19,6 +19,7 @@ import UserEdit from "./pages/UserEdit/UserEdit";
 import EditLifeCycle from "./pages/EditLifeCycle/EditLifeCycle";
 import EditAsset from "./pages/EditAssets/EditAssets";
 import EditFeedback from "./pages/EditFeedBacks/EditFeedBacks";
+import EditReceipt from "./pages/EditReceipt/EditReceipt";
 
 const App = () => {
   //animation states
@@ -173,7 +174,7 @@ const App = () => {
                 />
                 <Route path="/about" element={<About />} />
                 <Route path="/request" element={<Request />} />
-                <Route path="/management" element={<Management />} />
+                <Route path="/management" element={<Management userID={userID}/>} />
                 <Route
                   path={`/profile/${userID}`}
                   element={
@@ -184,7 +185,7 @@ const App = () => {
                   <Route path="/lifecycles/:id" element={<EditLifeCycle />} />
                   <Route path="/feedbacks/:id" element={<EditFeedback />} />
                   <Route path="/assets/:id" element={<EditAsset />} />
-                  <Route path="/receipt/:id" element={<Management />} />
+                  <Route path="/receipts/:id" element={<EditReceipt userID={userID}/>}/>
               </Route>
             </Routes>
           </Router>

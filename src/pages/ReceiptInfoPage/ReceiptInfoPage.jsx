@@ -12,14 +12,15 @@ import {
   import { useEffect, useState } from "react";
   import { MdOutlineDelete } from "react-icons/md";
   import api from "../../api/api";
-import { IoSearchOutline } from "react-icons/io5";
+  import { IoSearchOutline } from "react-icons/io5";
   
-  const ReceiptsInfoPage = ({ navigate }) => {
+  const ReceiptsInfoPage = ({ navigate, userRoles = [], userID }) => {
     const [receipts, setReceipts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const receiptsPerPage = 10;
   
-    const fetchReceipts = async () => {
+    // Fetch receipts for admin
+    const fetchAdminReceipts = async () => {
       try {
         const response = await api.get("/receipts");
         if (!response) {
@@ -32,9 +33,28 @@ import { IoSearchOutline } from "react-icons/io5";
       }
     };
   
+    // Fetch receipts for user
+    const fetchUserReceipts = async () => {
+      try {
+        // Adjust the API endpoint or logic based on user's permissions
+        const response = await api.get(`/receipts/${userID}`);
+        if (!response) {
+          throw new Error("Failed to fetch user-specific receipts");
+        }
+        const reversedReceipts = response.data.reverse();
+        setReceipts(reversedReceipts);
+      } catch (error) {
+        console.error("Error fetching user-specific receipts:", error);
+      }
+    };
+  
     useEffect(() => {
-      fetchReceipts();
-    }, []);
+      if (userRoles.includes("Admin")) {
+        fetchAdminReceipts();
+      } else {
+        fetchUserReceipts();
+      }
+    }); 
   
     const indexOfLastReceipt = currentPage * receiptsPerPage;
     const indexOfFirstReceipt = indexOfLastReceipt - receiptsPerPage;
@@ -51,9 +71,13 @@ import { IoSearchOutline } from "react-icons/io5";
   
     const handleDelete = async (id) => {
       try {
-        await api.delete(`/receipts`, { data: { id } });
+        await api.delete("/receipts", { data: { id } });
         console.log(`Deleted receipt with ID: ${id}`);
-        fetchReceipts();
+        if (userRoles.includes("Admin")) {
+          fetchAdminReceipts();
+        } else {
+          fetchUserReceipts();
+        }
       } catch (error) {
         console.error(`Error deleting receipt with ID ${id}:`, error);
       }
@@ -110,13 +134,15 @@ import { IoSearchOutline } from "react-icons/io5";
                       boxSize="1.5em"
                       onClick={() => handleView(receipt._id)}
                     />
-                    <Icon
-                      cursor="pointer"
-                      color="#A30D11"
-                      as={MdOutlineDelete}
-                      boxSize="1.5em"
-                      onClick={() => handleDelete(receipt._id)}
-                    />
+                    {userRoles.includes("Admin") && (
+                      <Icon
+                        cursor="pointer"
+                        color="#A30D11"
+                        as={MdOutlineDelete}
+                        boxSize="1.5em"
+                        onClick={() => handleDelete(receipt._id)}
+                      />
+                    )}
                   </ButtonGroup>
                 </Td>
               </Tr>

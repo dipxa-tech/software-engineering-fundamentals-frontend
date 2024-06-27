@@ -8,6 +8,7 @@ import {
   Heading,
   useToast,
   Flex,
+  Text,
 } from "@chakra-ui/react";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
@@ -30,7 +31,6 @@ const Login = ({ setLoggedIn, setProfile }) => {
         username,
         password,
       };
-      console.log(loginData)
 
       // Make an API request to authenticate the user and obtain a token
       const response = await api.post("/auth", loginData);
@@ -41,18 +41,17 @@ const Login = ({ setLoggedIn, setProfile }) => {
       // Store the token and user data in a secure manner (e.g., in cookies or local storage)
       Cookies.set("accessToken", accessToken);
 
-
       if (response) {
         const fetchUserProfile = async () => {
-          const storedUserData = Cookies.get('accessToken');
+          const storedUserData = Cookies.get("accessToken");
           if (storedUserData) {
             const decodedToken = jwtDecode(storedUserData);
             const userId = decodedToken.UserInfo._id;
             const response = await api.get(`/users/${userId}`);
-            setProfile(response.data.profile)
+            setProfile(response.data.profile);
           }
         };
-    
+
         fetchUserProfile();
         toast({
           title: "Logged In.",
@@ -88,65 +87,71 @@ const Login = ({ setLoggedIn, setProfile }) => {
   };
 
   return (
-    <Flex
-      justifyContent="center"
-      alignItems="center"
-      direction="column"
-      width="100%"
-      height="100%"
-    >
-      <Heading
+    <Box>
+      <Flex
         justifyContent="center"
-        alignContent="center"
-        pb="2%"
-        textColor={theme.colors.beigeWord}
-        fontFamily="mono"
+        alignItems="center"
+        direction="column"
+        width="100vw"
+        height="70vh"
       >
-        Login
-      </Heading>
-      <Box
-        maxW="lg"
-        width="100%"
-        p="2%"
-        boxShadow="md"
-        borderWidth="1px"
-        borderRadius="md"
-        borderColor={theme.colors.beigeWord}
-        color={theme.colors.beigeWord}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
+        <Heading pb="2%" textColor={theme.colors.beigeWord} fontFamily="mono">
+          Login
+        </Heading>
+        <Box
+          maxW="lg"
+          width="100%"
+          p="2%"
+          boxShadow="md"
+          borderWidth="1px"
+          borderRadius="md"
+          borderColor={theme.colors.beigeWord}
+          color={theme.colors.beigeWord}
         >
-          <Stack spacing={4}>
-            <FormControl id="username" isRequired>
-              <FormLabel>Username</FormLabel>
-              <Input
-                type="text"
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </FormControl>
-            <FormControl id="password" isRequired>
-              <FormLabel>Password</FormLabel>
-              <Input
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </FormControl>
-            <Button
-              type="submit"
-              bg={theme.colors.redWord}
-              size="lg"
-              fontSize="md"
-            >
-              Login
-            </Button>
-          </Stack>
-        </form>
-      </Box>
-    </Flex>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+          >
+            <Stack spacing={4}>
+              <FormControl id="username" isRequired>
+                <FormLabel>Username</FormLabel>
+                <Input
+                  type="text"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </FormControl>
+              <FormControl id="password" isRequired>
+                <FormLabel>Password</FormLabel>
+                <Input
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
+              <Button
+                type="submit"
+                bg={theme.colors.redWord}
+                size="lg"
+                fontSize="md"
+              >
+                Login
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+        <Flex
+          justifyContent="flex-end"
+          width="25%"
+          mt={2}
+        >
+          <Text color="beigeWord">Already have an Account? Click</Text>
+          <Text color="redWord" ml={1} cursor="pointer" onClick={() => navigate("/signup")}>
+            Here.
+          </Text>
+        </Flex>
+      </Flex>
+    </Box>
   );
 };
 

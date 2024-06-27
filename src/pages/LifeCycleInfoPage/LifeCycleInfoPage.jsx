@@ -75,7 +75,7 @@ const LifecycleInfoPage = ({ navigate }) => {
             <Td>Quantity</Td>
             <Td>Status</Td>
             <Td>Action</Td>
-            <Td>Others</Td>
+            <Td>Information</Td>
             <Td>Actions</Td>
           </Tr>
         </Thead>

@@ -8,6 +8,7 @@ import {
   useToast,
   Flex,
   Heading,
+  Text,
 } from "@chakra-ui/react";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
@@ -161,6 +162,22 @@ const SignUp = () => {
           </VStack>
         </form>
       </Box>
+      <Flex
+        justifyContent="flex-end"
+        width="25%"
+        mt={2}
+        pr={4} // Adjust padding-right for spacing
+      >
+        <Text color="beigeWord">Already have an Account? Click</Text>
+        <Text
+          color="redWord"
+          ml={1}
+          cursor="pointer"
+          onClick={() => navigate("/login")}
+        >
+          Here.
+        </Text>
+      </Flex>
     </Flex>
   );
 };

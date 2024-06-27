@@ -147,7 +147,7 @@ const EditFeedback = () => {
               }}
               fontWeight="600"
               borderRadius="10px"
-              onClick={() => navigate("/feedbacks")}
+              onClick={() => navigate("/management")}
             >
               Cancel
             </Button>

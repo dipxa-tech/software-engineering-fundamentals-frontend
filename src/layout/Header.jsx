@@ -136,9 +136,9 @@ const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
                 cursor="pointer"
               />
             </MenuButton>
-            <MenuList bg="transparent" borderColor={theme.colors.beigeWord}>
+            <MenuList bg="blackBg" borderColor={theme.colors.beigeWord}>
               <MenuItem
-                bg="transparent"
+                bg="blackBg"
                 _hover={{ bg: theme.colors.redWord }}
                 _active={{ bg: theme.colors.redWord }}
                 color={theme.colors.beigeWord}
@@ -151,7 +151,7 @@ const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
                 Profile
               </MenuItem>
               <MenuItem
-                bg="transparent"
+                bg="blackBg"
                 _hover={{ bg: theme.colors.redWord }}
                 _active={{ bg: theme.colors.redWord }}
                 color={theme.colors.beigeWord}
@@ -164,7 +164,7 @@ const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
                 Management
               </MenuItem>
               <MenuItem
-                bg="transparent"
+                bg="blackBg"
                 _hover={{ bg: theme.colors.redWord }}
                 _active={{ bg: theme.colors.redWord }}
                 color={theme.colors.beigeWord}
@@ -177,7 +177,7 @@ const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
                 Request
               </MenuItem>
               <MenuItem
-                bg="transparent"
+                bg="blackBg"
                 _hover={{ bg: theme.colors.redWord }}
                 _active={{ bg: theme.colors.redWord }}
                 color={theme.colors.beigeWord}

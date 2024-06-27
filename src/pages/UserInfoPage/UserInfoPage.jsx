@@ -8,6 +8,7 @@ import {
     ButtonGroup,
     Icon,
     Badge,
+    Center,
   } from "@chakra-ui/react";
   import { useEffect, useState } from "react";
   import { IoSearchOutline } from "react-icons/io5";
@@ -16,28 +17,30 @@ import {
   
   const UsersInfoPage = ({ navigate }) => {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 10;
   
-    // Fetch users from your API endpoint
+    useEffect(() => {
+      fetchUsers();
+    }, []);
+  
     const fetchUsers = async () => {
+      setLoading(true);
       try {
         const response = await api.get("/users");
-        if (!response) {
+        if (!response.data) {
           throw new Error("Failed to fetch users");
         }
-        // Reverse the order of users fetched from API
         const reversedUsers = response.data.reverse();
         setUsers(reversedUsers);
       } catch (error) {
         console.error("Error fetching users:", error);
         // Handle error state or toast message
+      } finally {
+        setLoading(false);
       }
     };
-  
-    useEffect(() => {
-      fetchUsers();
-    }, []);
   
     const renderRoles = (roles) => {
       return roles.join(", ");
@@ -63,8 +66,23 @@ import {
       }
     };
   
+    const handleRefresh = () => {
+      fetchUsers();
+    };
+  
+    if (loading) {
+      return (
+        <Center mt={8}>
+          <p>Loading...</p>
+        </Center>
+      );
+    }
+  
     return (
       <>
+        <Button onClick={handleRefresh} mb={4}>
+          Refresh Users
+        </Button>
         <Table variant="unstyled">
           <Thead>
             <Tr color="white" fontWeight="600" fontSize="sm">
@@ -78,49 +96,57 @@ import {
             </Tr>
           </Thead>
           <Tbody color="beigeWord">
-            {currentUsers.map((user) => (
-              <Tr key={user._id}>
-                <Td>{user.username}</Td>
-                <Td>{user.email}</Td>
-                <Td>{user.fullname}</Td>
-                <Td>{user.phone_number}</Td>
-                <Td>
-                  {user.roles && user.roles.length > 0 ? (
-                    <Badge
-                      px="15%"
-                      py="5%"
-                      borderRadius="xl"
-                      colorScheme={
-                        renderRoles(user.roles) === "Admin" ? "green" : "purple"
-                      }
-                    >
-                      {renderRoles(user.roles)}
-                    </Badge>
-                  ) : (
-                    <span>No Role</span>
-                  )}
-                </Td>
-                <Td>{user.address}</Td>
-                <Td>
-                  <ButtonGroup spacing="4">
-                    <Icon
-                      cursor="pointer"
-                      color="#624DE3"
-                      as={IoSearchOutline}
-                      boxSize="1.5em"
-                      onClick={() => handleView(user._id)}
-                    />
-                    <Icon
-                      cursor="pointer"
-                      color="#A30D11"
-                      as={MdOutlineDelete}
-                      boxSize="1.5em"
-                      onClick={() => handleDelete(user._id)}
-                    />
-                  </ButtonGroup>
+            {currentUsers.length > 0 ? (
+              currentUsers.map((user) => (
+                <Tr key={user._id}>
+                  <Td>{user.username}</Td>
+                  <Td>{user.email}</Td>
+                  <Td>{user.fullname}</Td>
+                  <Td>{user.phone_number}</Td>
+                  <Td>
+                    {user.roles && user.roles.length > 0 ? (
+                      <Badge
+                        px="15%"
+                        py="5%"
+                        borderRadius="xl"
+                        colorScheme={
+                          renderRoles(user.roles) === "Admin" ? "green" : "purple"
+                        }
+                      >
+                        {renderRoles(user.roles)}
+                      </Badge>
+                    ) : (
+                      <span>No Role</span>
+                    )}
+                  </Td>
+                  <Td>{user.address}</Td>
+                  <Td>
+                    <ButtonGroup spacing="4">
+                      <Icon
+                        cursor="pointer"
+                        color="#624DE3"
+                        as={IoSearchOutline}
+                        boxSize="1.5em"
+                        onClick={() => handleView(user._id)}
+                      />
+                      <Icon
+                        cursor="pointer"
+                        color="#A30D11"
+                        as={MdOutlineDelete}
+                        boxSize="1.5em"
+                        onClick={() => handleDelete(user._id)}
+                      />
+                    </ButtonGroup>
+                  </Td>
+                </Tr>
+              ))
+            ) : (
+              <Tr>
+                <Td colSpan="7" textAlign="center">
+                  No users found.
                 </Td>
               </Tr>
-            ))}
+            )}
           </Tbody>
         </Table>
         {/* Pagination controls */}

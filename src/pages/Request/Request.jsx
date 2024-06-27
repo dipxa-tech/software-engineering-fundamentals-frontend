@@ -179,9 +179,9 @@ const Request = () => {
                 ))}
               </Select>
             </FormControl>
-            <FormControl id="others">
+            <FormControl id="others" isRequired>
               <FormLabel color="beigeWord">
-                Others information (if needed)
+                Others information
               </FormLabel>
               <Textarea
                 color="beigeWord"
