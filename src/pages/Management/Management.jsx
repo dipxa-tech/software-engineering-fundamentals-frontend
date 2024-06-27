@@ -18,7 +18,7 @@ import FeedbackInfoPage from "../FeedbackInfoPage/FeedbackInfoPage";
 import NewUserModal from "../../layout/NewUserModal";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import NewAssetModal from "../../layout/NewAssetModal";
 
 const Management = ({ userID }) => {
@@ -38,11 +38,16 @@ const Management = ({ userID }) => {
         const decodedToken = jwtDecode(storedUserData);
         const roles = decodedToken.UserInfo.roles;
         setUserRoles(roles);
+        console.log(userRoles)
+      } else {
+        // Handle case where there is no access token (e.g., user logged out)
+        setUserRoles([]);
       }
     };
 
     fetchUserProfile();
-  }, []);
+  }, [Cookies.get("accessToken")]); // Dependency on accessToken
+
 
   // Admin view
   const renderAdminView = () => (
@@ -159,7 +164,7 @@ const Management = ({ userID }) => {
           </TabPanel>
           <TabPanel>
             <Box p={4}>
-              <ReceiptsInfoPage navigate={navigate} userID={userID} userRoles={userRoles}/>
+              <ReceiptsInfoPage navigate={navigate} userID={userID} userRoles={userRoles} />
             </Box>
           </TabPanel>
         </TabPanels>
@@ -190,7 +195,7 @@ const Management = ({ userID }) => {
         <TabPanels>
           <TabPanel>
             <Box p={4}>
-              <ReceiptsInfoPage navigate={navigate} userID={userID} userRoles={userRoles}/>
+              <ReceiptsInfoPage navigate={navigate} userID={userID} userRoles={userRoles} />
             </Box>
           </TabPanel>
         </TabPanels>
