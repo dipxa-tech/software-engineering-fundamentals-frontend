@@ -38,7 +38,6 @@ const Management = ({ userID }) => {
         const decodedToken = jwtDecode(storedUserData);
         const roles = decodedToken.UserInfo.roles;
         setUserRoles(roles);
-        console.log(userRoles)
       } else {
         // Handle case where there is no access token (e.g., user logged out)
         setUserRoles([]);

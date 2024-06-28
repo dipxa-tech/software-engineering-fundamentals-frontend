@@ -36,7 +36,6 @@ const ReceiptsInfoPage = ({ navigate, userRoles = [], userID }) => {
   // Fetch receipts for user
   const fetchUserReceipts = async () => {
     try {
-      console.log(userID)
       const response = await api.get(`/receipts/${userID}`);
       if (!response) {
         throw new Error("Failed to fetch user-specific receipts");
