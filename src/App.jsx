@@ -11,7 +11,7 @@ import Profile from "./pages/Profile/Profile";
 import { Box, Flex } from "@chakra-ui/react";
 import About from "./pages/About/About";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import api from "../src/api/api";
 import Request from "./pages/Request/Request";
 import Management from "./pages/Management/Management";
@@ -22,70 +22,48 @@ import EditFeedback from "./pages/EditFeedBacks/EditFeedBacks";
 import EditReceipt from "./pages/EditReceipt/EditReceipt";
 
 const App = () => {
-  //animation states
   const comp = useRef(null);
   const [welcomeText, setWelcomeText] = useState("Welcome.");
   const [userID, setUserID] = useState("");
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const intervalRef = useRef(null); // Ref for the interval
-  const [showWelcome, setShowWelcome] = useState(true); // State to control visibility of welcome
-
-  //login states
+  const intervalRef = useRef(null);
+  const [showWelcome, setShowWelcome] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
-
-  //profile states
   const [profile, setProfile] = useState("");
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const storedUserData = Cookies.get("accessToken");
-      if (storedUserData) {
-        const decodedToken = jwtDecode(storedUserData);
-        const userId = decodedToken.UserInfo._id;
-        setUserID(userId);
-        const response = await api.get(`/users/${userId}`);
-        setProfile(response.data.profile);
-      }
-    };
 
-    fetchUserProfile();
+  const fetchUserProfile = async (userId) => {
+    const response = await api.get(`/users/${userId}`);
+    setProfile(response.data.profile);
+  };
+
+  useEffect(() => {
+    const storedUserData = Cookies.get("accessToken");
+    if (storedUserData) {
+      const decodedToken = jwtDecode(storedUserData);
+      const userId = decodedToken.UserInfo._id;
+      setUserID(userId);
+      fetchUserProfile(userId);
+    }
   }, []);
 
-  //handles and check if user accidentally refreshes the page to maintain the logged in status
   useEffect(() => {
-    // Check if user is logged in on component mount
     const loggedInStatus = Cookies.get("accessToken");
-    setLoggedIn(loggedInStatus);
+    setLoggedIn(!!loggedInStatus); // Fix to ensure boolean value
   }, []);
 
   useEffect(() => {
     const startAnimation = () => {
       let iteration = 0;
-
-      clearInterval(intervalRef.current); // Clear interval using useRef
-
+      clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
-        setWelcomeText((prevText) => {
-          return prevText
+        setWelcomeText((prevText) =>
+          prevText
             .split("")
-            .map((letter, index) => {
-              if (index < iteration) {
-                return welcomeText[index];
-              }
-
-              return letters[Math.floor(Math.random() * 26)];
-            })
-            .join("");
-        });
-
-        // if (iteration >= welcomeText.length) {
-        //   clearInterval(intervalRef.current);
-        //   // Reset to "Welcome" after animation
-        //   setTimeout(() => {
-        //     setWelcomeText("Welcome.");
-        //     startAnimation(); // Start animation again
-        //   }, 3000); // Change 3000 to desired duration before resetting
-        // }
-
+            .map((letter, index) =>
+              index < iteration ? welcomeText[index] : letters[Math.floor(Math.random() * 26)]
+            )
+            .join("")
+        );
         iteration += 1 / 3;
       }, 30);
     };
@@ -95,9 +73,7 @@ const App = () => {
       t1.from("#welcome", {
         opacity: 0,
         duration: 1,
-        onComplete: () => {
-          startAnimation();
-        },
+        onComplete: () => startAnimation(),
       })
         .to("#welcome", {
           opacity: 0,
@@ -107,91 +83,67 @@ const App = () => {
         .from("#homePageRouting", {
           opacity: 0,
           duration: 0.5,
-          onComplete: () => {
-            setShowWelcome(false);
-          },
+          onComplete: () => setShowWelcome(false),
         });
     }, comp);
 
     return () => {
-      clearInterval(intervalRef.current); // Clear interval on unmount
+      clearInterval(intervalRef.current);
       ctx.revert();
     };
-  }, []); // Run once on component mount
+  }, []);
 
-  // useEffect(() => {
-  //   console.log(animationComplete);
-  // }, [animationComplete]);
   return (
-    <>
-      <div className="relative" ref={comp}>
-        {showWelcome && (
-          <Flex
-            h="100vh"
-            w="100vw"
-            bg="blackBg"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <h1
-              id="welcome"
-              className="text-9xl font-bold absolute text-gray-100 font-shareTechMono"
+    <div className="relative" ref={comp}>
+      {showWelcome && (
+        <Flex h="100vh" w="100vw" bg="blackBg" justifyContent="center" alignItems="center">
+          <h1 id="welcome" className="text-9xl font-bold absolute text-gray-100 font-shareTechMono">
+            {welcomeText}
+          </h1>
+        </Flex>
+      )}
+      <Box id="homePageRouting" className="absolute bg-blackBg top-0 left-0" minW="100%" minH="100vh">
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <MainLayout
+                  setLoggedIn={setLoggedIn}
+                  loggedIn={loggedIn}
+                  profile={profile}
+                  setUserID={setUserID}
+                  userID={userID}
+                />
+              }
             >
-              {welcomeText}
-            </h1>
-          </Flex>
-        )}
-        <Box
-          id="homePageRouting"
-          className="absolute bg-blackBg top-0 left-0"
-          minW="100%"
-          minH="100vh"
-        >
-          <Router>
-            <Routes>
+              <Route index element={<Home />} />
+              <Route path="/contactus" element={<ContactUs />} />
               <Route
-                path="/"
-                element={
-                  <MainLayout
-                    setLoggedIn={setLoggedIn}
-                    loggedIn={loggedIn}
-                    profile={profile}
-                    userID={userID}
-                  />
-                }
-              >
-                <Route index element={<Home />} />
-                <Route path="/contactus" element={<ContactUs />} />
-                <Route
-                  path="/login"
-                  element={
-                    <Login setLoggedIn={setLoggedIn} setProfile={setProfile} />
-                  }
-                />
-                <Route
-                  path="/signup"
-                  element={<SignUp setLoggedIn={setLoggedIn} />}
-                />
-                <Route path="/about" element={<About />} />
-                <Route path="/request" element={<Request />} />
-                <Route path="/management" element={<Management userID={userID}/>} />
-                <Route
-                  path={`/profile/${userID}`}
-                  element={
-                    <Profile profile={profile} setProfile={setProfile} />
-                  }
-                />
-                  <Route path="/users/:id" element={<UserEdit />} />
-                  <Route path="/lifecycles/:id" element={<EditLifeCycle />} />
-                  <Route path="/feedbacks/:id" element={<EditFeedback />} />
-                  <Route path="/assets/:id" element={<EditAsset />} />
-                  <Route path="/receipts/:id" element={<EditReceipt userID={userID}/>}/>
-              </Route>
-            </Routes>
-          </Router>
-        </Box>
-      </div>
-    </>
+                path="/login"
+                element={<Login setLoggedIn={setLoggedIn} setUserID={setUserID} setProfile={setProfile} />}
+              />
+              <Route
+                path="/signup"
+                element={<SignUp setLoggedIn={setLoggedIn} setUserID={setUserID} />}
+              />
+              <Route path="/about" element={<About />} />
+              <Route path="/request" element={<Request />} />
+              <Route path="/management" element={<Management userID={userID} />} />
+              <Route
+                path={`/profile/${userID}`}
+                element={<Profile profile={profile} setProfile={setProfile} />}
+              />
+              <Route path="/users/:id" element={<UserEdit />} />
+              <Route path="/lifecycles/:id" element={<EditLifeCycle />} />
+              <Route path="/feedbacks/:id" element={<EditFeedback />} />
+              <Route path="/assets/:id" element={<EditAsset />} />
+              <Route path="/receipts/:id" element={<EditReceipt userID={userID} />} />
+            </Route>
+          </Routes>
+        </Router>
+      </Box>
+    </div>
   );
 };
 

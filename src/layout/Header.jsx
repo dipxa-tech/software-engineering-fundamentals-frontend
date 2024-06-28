@@ -18,29 +18,28 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; 
 
-
-const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
+const Header = ({ loggedIn, setLoggedIn, profile, setUserID, userID }) => { 
   const navigate = useNavigate();
   const theme = useTheme();
   const toast = useToast();
 
   const [userData, setUserData] = useState({});
-  
+
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const storedUserData = Cookies.get('accessToken');
+      const storedUserData = Cookies.get("accessToken");
       if (storedUserData) {
         const decodedToken = jwtDecode(storedUserData);
         const userId = decodedToken.UserInfo._id;
         const response = await api.get(`/users/${userId}`);
-        setUserData(response.data)
+        setUserData(response.data);
       }
     };
 
     fetchUserProfile();
-  }, [loggedIn])
+  }, [loggedIn]);
 
   const handleLogout = async () => {
     try {
@@ -49,6 +48,10 @@ const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
 
       // Remove the access token from cookies
       Cookies.remove("accessToken");
+
+      // Reset loggedIn state and userID state
+      setLoggedIn(false);
+      setUserID(""); // Reset the userID state
 
       // Redirect or perform actions after successful logout
       navigate("/");
@@ -184,9 +187,7 @@ const Header = ({ loggedIn, setLoggedIn, profile, userID }) => {
                 justifyContent="center"
                 onClick={() => {
                   // Handle logout functionality
-                  setLoggedIn(false);
                   handleLogout();
-                  navigate("/");
                 }}
               >
                 Logout

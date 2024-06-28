@@ -15,9 +15,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; 
 
-const Login = ({ setLoggedIn, setProfile }) => {
+const Login = ({ setLoggedIn, setProfile, setUserID }) => {
   const toast = useToast();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -47,6 +47,7 @@ const Login = ({ setLoggedIn, setProfile }) => {
           if (storedUserData) {
             const decodedToken = jwtDecode(storedUserData);
             const userId = decodedToken.UserInfo._id;
+            setUserID(userId); 
             const response = await api.get(`/users/${userId}`);
             setProfile(response.data.profile);
           }
@@ -140,13 +141,14 @@ const Login = ({ setLoggedIn, setProfile }) => {
             </Stack>
           </form>
         </Box>
-        <Flex
-          justifyContent="flex-end"
-          width="25%"
-          mt={2}
-        >
+        <Flex justifyContent="flex-end" width="25%" mt={2}>
           <Text color="beigeWord">Already have an Account? Click</Text>
-          <Text color="redWord" ml={1} cursor="pointer" onClick={() => navigate("/signup")}>
+          <Text
+            color="redWord"
+            ml={1}
+            cursor="pointer"
+            onClick={() => navigate("/signup")}
+          >
             Here.
           </Text>
         </Flex>
