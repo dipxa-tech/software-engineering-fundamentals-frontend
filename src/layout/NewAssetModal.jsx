@@ -21,8 +21,8 @@ import {
       genre: "",
       date: "",
       description: "",
-      amount: "",
-      status: "",
+      amount: 0,
+      status: "Available",
     });
   
     const handleInputChange = (e) => {
@@ -35,8 +35,9 @@ import {
   
     const handleAddAsset = async () => {
       try {
+        console.log(newAsset)
         const response = await api.post("/assets", newAsset);
-        if (response.status === 201) {
+        if (response) {
           setNewAsset({
             genre: "",
             date: "",
